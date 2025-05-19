@@ -20,6 +20,10 @@ const itemSchema = new Schema({
     type: String,
     required: [true, "Category is required"],
   },
+  img: {
+    type: String,
+  },
+  imgPublicId: { type: String },
 });
 
 const Item = model("Item", itemSchema);
