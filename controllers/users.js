@@ -63,7 +63,7 @@ export const updateUser = async (req, res) => {
     const updatedUser = await User.findOneAndUpdate(
       { email },
       { firstName, lastName, password },
-      { mew: false }
+      { new: false }
     );
     res.status(200).json(updatedUser);
   } catch (error) {

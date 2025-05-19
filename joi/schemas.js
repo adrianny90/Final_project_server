@@ -13,8 +13,8 @@ export const signInSchema = Joi.object({
 });
 
 export const itemSchema = Joi.object({
-  title: Joi.string().required(),
-  image: Joi.string().required(),
-  content: Joi.string().required(),
+  name: Joi.string().required(),
+  description: Joi.string().required(),
+  userId: Joi.string().required(),
   category: Joi.string(),
 });
