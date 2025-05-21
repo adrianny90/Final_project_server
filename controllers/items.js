@@ -2,14 +2,30 @@ import Item from "../models/Items.js";
 import ErrorResponse from "../utils/ErrorResponse.js";
 
 export const createItem = async (req, res) => {
-  const { name, description, userId, category } = req.body;
+  const {
+    title,
+    description,
+    userId,
+    category,
+    address,
+    photos,
+    collectionTime,
+  } = req.body;
 
   try {
-    const checkItem = await Item.find({ name });
+    const checkItem = await Item.find({ title });
     if (checkItem.length)
       throw new ErrorResponse("Item with such name already exists", 409);
 
-    const item = await Item.create({ name, description, userId, category });
+    const item = await Item.create({
+      title,
+      description,
+      userId,
+      category,
+      address,
+      photos,
+      collectionTime,
+    });
     res.status(200).json(item);
   } catch (error) {
     throw new ErrorResponse(error.message, 401);
@@ -26,10 +42,10 @@ export const getAllItems = async (req, res) => {
 };
 
 export const getItem = async (req, res) => {
-  const { name, description, userId, category } = req.body;
+  const { title, description, userId, category } = req.body;
 
   try {
-    const findItem = await Item.findOne({ name });
+    const findItem = await Item.findOne({ title });
 
     if (!findItem)
       return res.status(404).json({ message: "Could not find item" });
@@ -41,13 +57,13 @@ export const getItem = async (req, res) => {
 };
 
 export const deleteItem = async (req, res) => {
-  const { name, description, userId, category } = req.body;
+  const { title, description, userId, category } = req.body;
 
   try {
-    const findItem = await Item.findOne({ name });
+    const findItem = await Item.findOne({ title });
     if (!findItem)
       return res.status(404).json({ message: "Could not find item" });
-    const deletedItem = await Item.findOneAndDelete({ name });
+    const deletedItem = await Item.findOneAndDelete({ title });
     res.status(200).json(deletedItem);
   } catch (error) {
     throw new ErrorResponse("Something went wrong", 400);
@@ -55,15 +71,29 @@ export const deleteItem = async (req, res) => {
 };
 
 export const updateItem = async (req, res) => {
-  const { name, description, userId, category } = req.body;
+  const {
+    title,
+    description,
+    userId,
+    category,
+    address,
+    photos,
+    collectionTime,
+  } = req.body;
 
   try {
-    const findItem = await Item.findOne({ name });
+    const findItem = await Item.findOne({ title });
     if (!findItem) throw new ErrorResponse("Item not found", 404);
     const updatedItem = await Item.findOneAndUpdate(
-      { name },
-      { description, category },
-      { new: true }
+      { title },
+      {
+        title,
+        description,
+        userId,
+        category,
+        photos,
+        collectionTime,
+      }
     );
     res.status(200).json(updatedItem);
   } catch (error) {
