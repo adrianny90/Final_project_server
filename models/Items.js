@@ -26,27 +26,27 @@ const itemSchema = new Schema({
     },
   ],
   address: {
-    street: { type: String, required: true },
-    houseStreet: { type: String, required: true },
-    postalCode: { type: String, required: true },
-    city: { type: String, required: true },
+    street: { type: String, required: false },
+    houseStreet: { type: String, required: false },
+    postalCode: { type: String, required: false },
+    city: { type: String, required: false },
     location: {
       type: {
         type: String, // Don't do `{ location: { type: String } }`
         enum: ["Point"], // 'location.type' must be 'Point'
-        required: true,
+        required: false,
         default: "Point",
       },
       coordinates: {
         type: [Number],
-        required: true,
+        required: false,
       },
     },
   },
 
   collectionTime: {
     type: Date,
-    required: true,
+    required: false,
   },
   createdAt: {
     type: Date,
