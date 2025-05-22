@@ -21,6 +21,10 @@ const userSchema = new Schema({
     required: [true, "Password is required"],
     select: false,
   },
+  role: { type: String, enum: ["admin", "user"], default: "user" },
+  createdAt: { type: Date, default: Date.now },
+  isVerified: { type: Boolean, default: false },
+  verificationToken: { type: String },
 });
 
 const User = model("User", userSchema);

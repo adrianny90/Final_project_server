@@ -9,7 +9,7 @@ export const signUpSchema = Joi.object({
 
 export const signInSchema = Joi.object({
   email: Joi.string().required(),
-  password: Joi.string().alphanum().min(8).max(12).required(),
+  password: Joi.string().alphanum().min(4).max(12).required(),
 });
 
 export const itemSchema = Joi.object({
