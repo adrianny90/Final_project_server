@@ -2,10 +2,15 @@ import User from "../models/User.js";
 import ErrorResponse from "../utils/ErrorResponse.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const createUser = async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
+  const verificationToken = crypto.randomBytes(32).toString("hex");
   try {
     const checkUser = await User.find({ email });
     if (checkUser.length)
@@ -16,8 +21,17 @@ export const createUser = async (req, res) => {
       lastName,
       email,
       password: hashedPassword,
+      verificationToken,
     });
-    res.status(200).json(user);
+    const verificationUrl = `http://localhost:5173/verify/${verificationToken}`;
+
+    await resend.emails.send({
+      from: "onboarding@resend.dev",
+      to: email,
+      subject: "Verify Your Email",
+      html: `<p>Click <a href="${verificationUrl}">here</a> to verify your email.</p>`,
+    });
+    res.status(201).json(user);
   } catch (error) {
     throw new ErrorResponse(error.message, 401);
   }
@@ -46,7 +60,7 @@ export const getUser = async (req, res) => {
     //Check if user typed password matches with hashed password on DB
     const isMatch = await bcrypt.compare(password, findUser.password);
     if (!isMatch) throw new ErrorResponse("Invalid credentials", 400);
-
+    if (!findUser.isVerified) throw new ErrorResponse("User not verified", 404);
     //Generate a JWT token to be sent to client
     const token = jwt.sign(
       { id: findUser._id, role: findUser.role },
@@ -121,4 +135,22 @@ export const me = async (req, res) => {
   const user = await User.findById(req.userId);
 
   res.status(200).json(user);
+};
+
+export const verifyUser = async (req, res) => {
+  console.log(req.body);
+  const { verificationToken } = req.body;
+  try {
+    const findUser = await User.findOne({ verificationToken });
+
+    if (!findUser) throw new ErrorResponse("User not found", 404);
+    const updatedUser = await User.findOneAndUpdate(
+      { verificationToken },
+      { isVerified: true },
+      { new: false }
+    );
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    throw new ErrorResponse("Something went wrong", 400);
+  }
 };
