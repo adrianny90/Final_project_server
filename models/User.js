@@ -21,6 +21,8 @@ const userSchema = new Schema({
     required: [true, "Password is required"],
     select: false,
   },
+  role: { type: String, enum: ["admin", "user"], default: "user" },
+  createdAt: { type: Date, default: Date.now },
 });
 
 const User = model("User", userSchema);

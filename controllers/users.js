@@ -1,15 +1,22 @@
 import User from "../models/User.js";
 import ErrorResponse from "../utils/ErrorResponse.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export const createUser = async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
-
+  const hashedPassword = await bcrypt.hash(password, 10);
   try {
     const checkUser = await User.find({ email });
     if (checkUser.length)
       throw new ErrorResponse("User with such email already exists", 409);
 
-    const user = await User.create({ firstName, lastName, email, password });
+    const user = await User.create({
+      firstName,
+      lastName,
+      email,
+      password: hashedPassword,
+    });
     res.status(200).json(user);
   } catch (error) {
     throw new ErrorResponse(error.message, 401);
@@ -26,15 +33,42 @@ export const getAllUsers = async (req, res) => {
 };
 
 export const getUser = async (req, res) => {
-  const { firstName, lastName, email, password } = req.body;
+  const { email, password } = req.body;
+  // console.log(email, password);
 
   try {
-    const findUser = await User.findOne({ email });
+    const findUser = await User.findOne({ email }).select("+password");
+    // console.log(findUser);
 
     if (!findUser)
       return res.status(404).json({ message: "Could not find user" });
 
-    res.status(200).json(findUser);
+    //Check if user typed password matches with hashed password on DB
+    const isMatch = await bcrypt.compare(password, findUser.password);
+    if (!isMatch) throw new ErrorResponse("Invalid credentials", 400);
+
+    //Generate a JWT token to be sent to client
+    const token = jwt.sign(
+      { id: findUser._id, role: findUser.role },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
+    // console.log(token);
+
+    const isProduction = false; //process.env.NODE_ENV === "production";
+    const cookieOptions = {
+      httpOnly: true, // Cookies are only sent with HTTP requests
+      secure: isProduction, // Cookies are only sent with https when on production and http on development
+      sameSite: isProduction ? "None" : "Lax",
+    };
+
+    const userResponse = findUser.toObject();
+    delete userResponse.password;
+
+    res.cookie("token", token, cookieOptions);
+    res.status(201).json({ message: "Successfully logged in", userResponse });
   } catch (error) {
     throw new ErrorResponse("Something went wrong", 400);
   }
@@ -69,4 +103,22 @@ export const updateUser = async (req, res) => {
   } catch (error) {
     throw new ErrorResponse("Something went wrong", 400);
   }
+};
+
+export const signOut = async (req, res) => {
+  const isProduction = process.env.NODE_ENV === "production";
+  const cookieOptions = {
+    httpOnly: true, // Cookies are only sent with HTTP requests
+    secure: isProduction, // Cookies are only sent with https when on production and http on development
+    sameSite: isProduction ? "None" : "Lax",
+  };
+
+  res.clearCookie("token", cookieOptions);
+  res.status(200).json({ message: "Goodbye!" });
+};
+
+export const me = async (req, res) => {
+  const user = await User.findById(req.userId);
+
+  res.status(200).json(user);
 };
