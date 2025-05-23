@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import { Resend } from "resend";
+import { emailSample } from "../email/email.js";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -24,12 +25,12 @@ export const createUser = async (req, res) => {
       verificationToken,
     });
     const verificationUrl = `http://localhost:5173/verify/${verificationToken}`;
-
+    //onboarding@resend.dev
     await resend.emails.send({
-      from: "onboarding@resend.dev",
+      from: "berlinGive@asdasd.ddns-ip.net",
       to: email,
       subject: "Verify Your Email",
-      html: `<p>Click <a href="${verificationUrl}">here</a> to verify your email.</p>`,
+      html: emailSample(firstName, verificationUrl),
     });
     res.status(201).json(user);
   } catch (error) {
