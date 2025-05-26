@@ -5,7 +5,7 @@ export const emailSample = (name, verificationUrl) => {
     <link
       rel="preload"
       as="image"
-      href="https://react-email-demo-bff2pugtq-resend.vercel.app/static/dropbox-logo.png" />
+      href="" />
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
     <meta name="x-apple-disable-message-reformatting" />
     <!--$-->
@@ -30,11 +30,10 @@ export const emailSample = (name, verificationUrl) => {
         <tr style="width:100%">
           <td>
             <img
-              alt="Dropbox"
-              height="33"
-              src="https://react-email-demo-bff2pugtq-resend.vercel.app/static/dropbox-logo.png"
-              style="display:block;outline:none;border:none;text-decoration:none"
-              width="40" />
+              alt="BerlinGive"
+              height="110"
+              src="https://th.bing.com/th/id/OIP.PVgK_uD_dYVZXjqaC6HX3gAAAA?cb=iwp2&rs=1&pid=ImgDetMain"              
+              width="110" />
             <table
               align="center"
               width="100%"
