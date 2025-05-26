@@ -7,6 +7,7 @@ import userRouter from "./routes/userRouter.js";
 import itemRouter from "./routes/itemRouter.js";
 import upload from "./middlewares/upload.js";
 import authRouter from "./routes/authRouter.js";
+import categoryRouter from "./routes/categoryRoutes.js";
 
 const server = express();
 const port = process.env.PORT || 3000;
@@ -18,6 +19,7 @@ server.use(cookieParser());
 server.use("/auth", authRouter);
 server.use("/users", userRouter);
 server.use("/items", itemRouter);
+server.use("/categroies",categoryRouter);
 
 server.post("/image-upload", upload.single("img"), (req, res) => {
   console.log(req.file);

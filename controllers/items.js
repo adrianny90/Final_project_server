@@ -100,3 +100,13 @@ export const updateItem = async (req, res) => {
     throw new ErrorResponse(`Something went wrong: ${error.message} `, 400);
   }
 };
+
+export const getItemsByCategory = async(req,res) => {
+  const {categoryName} = req.params;
+  try {
+    const items = await Item.find({category:categoryName});
+    res.status(200).json(items);
+  } catch (error) {
+    throw new ErrorResponse("Failed to fetch items by category",500);
+  }
+};

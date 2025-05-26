@@ -5,6 +5,7 @@ import {
   getAllItems,
   getItem,
   updateItem,
+  getItemsByCategory
 } from "../controllers/items.js";
 
 const itemRouter = Router();
@@ -15,6 +16,10 @@ itemRouter
   .post(createItem)
   .get(getItem)
   .delete(deleteItem)
-  .put(updateItem);
+  .put(updateItem)
+
+itemRouter
+  .route("/category/:categoryName")
+  .get(getItemsByCategory);
 
 export default itemRouter;
