@@ -18,14 +18,9 @@ export const createItem = async (req, res) => {
       throw new ErrorResponse("Item with such name already exists", 409);
 
     let coords = address?.location?.coordinates;
-    if (coords && coords.lenght === 2) {
-      const [a,b] = coords;
-
-      if (Math.abs(a)>90 && Math.abs(b) <=90) {
-        coords = [a,b];
-      } else if (Math.abs(b)> 90 && Math.abs(a)<= 90){
-        coords = [b,a];
-      }
+    if (coords && coords.length === 2) {
+      const [lat,lng] = coords;
+      coords = [lng,lat];
     }
 
     const item = await Item.create({
@@ -53,7 +48,7 @@ export const getAllItems = async (req, res) => {
   try {
     const {category} = req.query;
     const query = category ? {category}:{};
-    
+
     const items = await Item.find(query);
 
     res.status(200).json(items);
@@ -61,18 +56,8 @@ export const getAllItems = async (req, res) => {
     throw new ErrorResponse("Failed to fetch users", 500);
   }
 };
-try {
-  const { category } = req.query;
-  const query = category ? { category } : {};
-  
 
-  const items = await Item.find(query);
-  
-  res.status(200).json(items); 
-} catch (error) {
-  throw new ErrorResponse("Failed to fetch items", 500);
-}
-};
+;
 export const getItem = async (req, res) => {
   const { title, description, userId, category } = req.body;
 
