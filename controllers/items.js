@@ -2,6 +2,8 @@ import Item from "../models/Items.js";
 import ErrorResponse from "../utils/ErrorResponse.js";
 
 export const createItem = async (req, res) => {
+  console.log('called Create Item')
+  console.log('reqbody',req.body)
   const {
     title,
     description,
@@ -18,9 +20,8 @@ export const createItem = async (req, res) => {
       throw new ErrorResponse("Item with such name already exists", 409);
 
     let coords = address?.location?.coordinates;
-    if (coords && coords.length === 2) {
-      const [lat,lng] = coords;
-      coords = [lng,lat];
+    if(!Array.isArray(coords) || coords.length !==2) {
+      throw new ErrorResponse("Invalid or missing coordinates",400)
     }
 
     const item = await Item.create({
@@ -40,7 +41,8 @@ export const createItem = async (req, res) => {
     });
     res.status(200).json(item);
   } catch (error) {
-    throw new ErrorResponse(error.message, 401);
+    console.error('Error in createItem:',error)
+    return res.status(500).json({message: error.message || "Server Error"})
   }
 };
 
