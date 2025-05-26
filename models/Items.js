@@ -9,20 +9,20 @@ const itemSchema = new Schema({
   description: {
     type: String,
     required: [true, "Description is required!"],
-    min: 1,
+    minLength: 1,
   },
   userId: {
     type: String,
-    required: [true, "User id missing"],
-    unique: true,
+    required: [true, "User ID is required!"],
   },
   category: {
     type: String,
-    required: [true, "Category is required"],
+    required: [true, "Category is required!"],
   },
   photos: [
     {
       type: String,
+      required: false,
     },
   ],
   address: {
