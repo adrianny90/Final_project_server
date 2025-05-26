@@ -17,12 +17,29 @@ export const createItem = async (req, res) => {
     if (checkItem.length)
       throw new ErrorResponse("Item with such name already exists", 409);
 
+    let coords = address?.location?.coordinates;
+    if (coords && coords.lenght === 2) {
+      const [a,b] = coords;
+
+      if (Math.abs(a)>90 && Math.abs(b) <=90) {
+        coords = [a,b];
+      } else if (Math.abs(b)> 90 && Math.abs(a)<= 90){
+        coords = [b,a];
+      }
+    }
+
     const item = await Item.create({
       title,
       description,
       userId,
       category,
-      address,
+      address: {
+        ...address,
+        location: {
+          type: "Point",
+          coordinates: coords,
+        },
+      },
       photos,
       collectionTime,
     });
@@ -34,6 +51,11 @@ export const createItem = async (req, res) => {
 
 export const getAllItems = async (req, res) => {
   try {
+    const {category} = req.query;
+
+    const query = category ? {category}:{};
+    const items = await Item.find(query);
+
     const allItems = await Item.find();
     res.status(200).json(allItems);
   } catch (error) {
