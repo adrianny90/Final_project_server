@@ -34,6 +34,11 @@ export const createItem = async (req, res) => {
 
 export const getAllItems = async (req, res) => {
   try {
+    const {category} = req.query;
+
+    const query = category ? {category}:{};
+    const items = await Item.find(query);
+    
     const allItems = await Item.find();
     res.status(200).json(allItems);
   } catch (error) {
