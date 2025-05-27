@@ -45,7 +45,7 @@ const itemSchema = new Schema({
   },
 
   collectionTime: {
-    type: Date,
+    type: String,
     required: false,
   },
   createdAt: {
