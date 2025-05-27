@@ -2,8 +2,8 @@ import Item from "../models/Items.js";
 import ErrorResponse from "../utils/ErrorResponse.js";
 
 export const createItem = async (req, res) => {
-  console.log('called Create Item')
-  console.log('reqbody',req.body)
+  console.log("called Create Item");
+  console.log("reqbody", req.body);
   const {
     title,
     description,
@@ -20,8 +20,8 @@ export const createItem = async (req, res) => {
       throw new ErrorResponse("Item with such name already exists", 409);
 
     let coords = address?.location?.coordinates;
-    if(!Array.isArray(coords) || coords.length !==2) {
-      throw new ErrorResponse("Invalid or missing coordinates",400)
+    if (!Array.isArray(coords) || coords.length !== 2) {
+      throw new ErrorResponse("Invalid or missing coordinates", 400);
     }
 
     const item = await Item.create({
@@ -41,15 +41,15 @@ export const createItem = async (req, res) => {
     });
     res.status(200).json(item);
   } catch (error) {
-    console.error('Error in createItem:',error)
-    return res.status(500).json({message: error.message || "Server Error"})
+    console.error("Error in createItem:", error);
+    return res.status(500).json({ message: error.message || "Server Error" });
   }
 };
 
 export const getAllItems = async (req, res) => {
   try {
-    const {category} = req.query;
-    const query = category ? {category}:{};
+    const { category } = req.query;
+    const query = category ? { category } : {};
 
     const items = await Item.find(query);
 
@@ -59,19 +59,16 @@ export const getAllItems = async (req, res) => {
   }
 };
 
-;
-export const getItem = async (req, res) => {
-  const { title, description, userId, category } = req.body;
-
+// GET ITEM BY ID
+export const getItem = async (req, res, next) => {
   try {
-    const findItem = await Item.findOne({ title });
-
-    if (!findItem)
-      return res.status(404).json({ message: "Could not find item" });
-
-    res.status(200).json(findItem);
+    const item = await Item.findById(req.params.id);
+    if (!item) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+    res.status(200).json(item);
   } catch (error) {
-    throw new ErrorResponse("Something went wrong", 400);
+    next(new ErrorResponse("Something went wrong", 400));
   }
 };
 
