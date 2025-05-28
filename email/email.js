@@ -56,18 +56,14 @@ export const emailSample = (name, verificationUrl) => {
                       account here:
                     </p>
                     <a
-                      href="${verificationUrl}"
-                      style="line-height:100%;text-decoration:none;display:block;max-width:100%;mso-padding-alt:0px;background-color:#007ee6;border-radius:4px;color:#fff;font-family:&#x27;Open Sans&#x27;, &#x27;Helvetica Neue&#x27;, Arial;font-size:15px;text-align:center;width:210px;padding:14px 7px 14px 7px"
-                      target="_blank"
-                      ><span
-                        ><!--[if mso]><i style="mso-font-width:350%;mso-text-raise:21" hidden>&#8202;</i><![endif]--></span
-                      ><span
-                        style="max-width:100%;display:inline-block;line-height:120%;mso-padding-alt:0px;mso-text-raise:10.5px"
-                        >Confirm account</span
-                      ><span
-                        ><!--[if mso]><i style="mso-font-width:350%" hidden>&#8202;&#8203;</i><![endif]--></span
-                      ></a
-                    >
+                        href="${verificationUrl}"
+                        style="line-height:100%;text-decoration:none;display:block;max-width:100%;mso-padding-alt:0px;background-color:#007ee6;border-radius:4px;color:#fff;font-family:'Open Sans', 'Helvetica Neue', Arial;font-size:15px;text-align:center;width:210px;padding:14px 7px 14px 7px;margin:0 auto;"
+                        target="_blank"
+                        >
+                        <span><!--[if mso]><i style="mso-font-width:350%;mso-text-raise:21" hidden> </i><![endif]--></span>
+                        <span style="max-width:100%;display:inline-block;line-height:120%;mso-padding-alt:0px;mso-text-raise:10.5px">Confirm account</span>
+                        <span><!--[if mso]><i style="mso-font-width:350%" hidden> </i><![endif]--></span>
+                    </a>
                     <p
                       style="font-size:16px;line-height:26px;font-family:&#x27;Open Sans&#x27;, &#x27;HelveticaNeue-Light&#x27;, &#x27;Helvetica Neue Light&#x27;, &#x27;Helvetica Neue&#x27;, Helvetica, Arial, &#x27;Lucida Grande&#x27;, sans-serif;font-weight:300;color:#404040;margin-top:16px;margin-bottom:16px">
                       If you don&#x27;t want to open your account or

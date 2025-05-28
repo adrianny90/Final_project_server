@@ -14,16 +14,18 @@ export const createUser = async (req, res) => {
   const verificationToken = crypto.randomBytes(32).toString("hex");
   try {
     const checkUser = await User.find({ email });
-    if (checkUser.length)
+    if (checkUser.length && checkUser.isVerified)
       throw new ErrorResponse("User with such email already exists", 409);
 
-    const user = await User.create({
-      firstName,
-      lastName,
-      email,
-      password: hashedPassword,
-      verificationToken,
-    });
+    if (!checkUser) {
+      const user = await User.create({
+        firstName,
+        lastName,
+        email,
+        password: hashedPassword,
+        verificationToken,
+      });
+    }
     const verificationUrl = `http://localhost:5173/verify/${verificationToken}`;
     //onboarding@resend.dev
     await resend.emails.send({
