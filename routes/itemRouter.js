@@ -9,12 +9,8 @@ import {
 
 const itemRouter = Router();
 
-itemRouter
-  .route("/")
-  .get(getAllItems)
-  .post(createItem)
-  .get(getItem)
-  .delete(deleteItem)
-  .put(updateItem);
+itemRouter.route("/").get(getAllItems).post(createItem);
+
+itemRouter.route("/:id").get(getItem).delete(deleteItem).put(updateItem);
 
 export default itemRouter;
