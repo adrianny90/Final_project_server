@@ -5,6 +5,7 @@ import {
   signOut,
   me,
   verifyUser,
+  updateUser,
 } from "../controllers/users.js";
 import validateSchema from "../middlewares/validateSchema.js";
 import { signInSchema, signUpSchema } from "../joi/schemas.js";
@@ -18,5 +19,6 @@ authRouter.post("/signin", validateSchema(signInSchema), getUser);
 authRouter.post("/signup", validateSchema(signUpSchema), createUser);
 authRouter.delete("/signout", signOut);
 authRouter.post("/verify", verifyUser);
+authRouter.post("/update", updateUser);
 
 export default authRouter;

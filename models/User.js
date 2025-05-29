@@ -21,6 +21,25 @@ const userSchema = new Schema({
     required: [true, "Password is required"],
     select: false,
   },
+  address: {
+    street: { type: String, required: false, default: "" },
+    houseStreet: { type: String, required: false, default: "" },
+    postalCode: { type: String, required: false, default: "" },
+    city: { type: String, required: false, default: "" },
+    location: {
+      type: {
+        type: String, // Don't do `{ location: { type: String } }`
+        enum: ["Point"], // 'location.type' must be 'Point'
+        required: false,
+        default: "Point",
+      },
+      coordinates: {
+        type: [Number],
+        required: false,
+        default: 0,
+      },
+    },
+  },
   role: { type: String, enum: ["admin", "user"], default: "user" },
   createdAt: { type: Date, default: Date.now },
   isVerified: { type: Boolean, default: false },
