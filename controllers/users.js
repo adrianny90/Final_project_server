@@ -14,19 +14,19 @@ export const createUser = async (req, res) => {
   const verificationToken = crypto.randomBytes(32).toString("hex");
   try {
     const checkUser = await User.find({ email });
-    if (checkUser.length && checkUser.isVerified)
+    if (checkUser.length)
       throw new ErrorResponse("User with such email already exists", 409);
 
-    if (!checkUser) {
-      const user = await User.create({
-        firstName,
-        lastName,
-        email,
-        password: hashedPassword,
-        verificationToken,
-      });
-    }
+    const user = await User.create({
+      firstName,
+      lastName,
+      email,
+      password: hashedPassword,
+      verificationToken,
+    });
     const verificationUrl = `${process.env.CLIENT_URL}/verify/${verificationToken}`;
+    console.log("userdatatocreate", user);
+
     //onboarding@resend.dev
     await resend.emails.send({
       from: "berlinGive@asdasd.ddns-ip.net",
@@ -155,9 +155,7 @@ export const verifyUser = async (req, res) => {
   console.log(req.body);
   const { verificationToken } = req.body;
   try {
-    const findUser = await User.findOne({
-      verificationToken: verificationToken,
-    });
+    const findUser = await User.findOne({ verificationToken });
 
     if (!findUser) throw new ErrorResponse("User not found", 404);
     const updatedUser = await User.findOneAndUpdate(
