@@ -74,7 +74,7 @@ export const getUser = async (req, res) => {
     );
     // console.log(token);
 
-    const isProduction = false; //process.env.NODE_ENV === "production";
+    const isProduction = process.env.NODE_ENV === "production";
     const cookieOptions = {
       httpOnly: true, // Cookies are only sent with HTTP requests
       secure: isProduction, // Cookies are only sent with https when on production and http on development
