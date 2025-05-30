@@ -155,7 +155,9 @@ export const verifyUser = async (req, res) => {
   console.log(req.body);
   const { verificationToken } = req.body;
   try {
-    const findUser = await User.findOne({ verificationToken });
+    const findUser = await User.findOne({
+      verificationToken: verificationToken,
+    });
 
     if (!findUser) throw new ErrorResponse("User not found", 404);
     const updatedUser = await User.findOneAndUpdate(
