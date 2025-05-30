@@ -24,6 +24,7 @@ server.use("/users", userRouter);
 server.use("/items", itemRouter);
 server.use("/message", messageRouter);
 server.use("/event", eventRouter);
+server.use("/verify", verifyRouter);
 
 server.post("/image-upload", upload.single("img"), (req, res) => {
   console.log(req.file);
