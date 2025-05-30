@@ -9,6 +9,7 @@ import upload from "./middlewares/upload.js";
 import authRouter from "./routes/authRouter.js";
 import messageRouter from "./routes/messageRouter.js";
 import eventRouter from "./routes/eventRouter.js";
+import verifyRouter from "./routes/verifyRouter.js";
 
 const server = express();
 const port = process.env.PORT || 3000;
