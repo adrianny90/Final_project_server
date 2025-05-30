@@ -1,6 +1,5 @@
-import User from "../models/User.js";
-
 import { Router } from "express";
+import User from "../models/User.js";
 
 const verifyRouter = Router();
 
@@ -8,17 +7,23 @@ verifyRouter.route("/:token").get(async (req, res) => {
   const { token } = req.params;
   console.log("GET request received with token:", token);
   try {
-    const findUser = await User.findOne({ verificationToken });
+    const findUser = await User.findOne({ verificationToken: token });
+    if (!findUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
 
-    if (!findUser) throw new ErrorResponse("User not found", 404);
     const updatedUser = await User.findOneAndUpdate(
-      { token },
-      { isVerified: true },
+      { verificationToken: token },
+      { isVerified: true, verificationToken: null },
       { new: false }
     );
-    res.status(200).json(updatedUser);
+
+    res
+      .status(200)
+      .json({ message: "Verification successful", user: updatedUser });
   } catch (error) {
-    throw new ErrorResponse("Something went wrong", 400);
+    console.error("Verification error:", error);
+    res.status(500).json({ error: "Server error" });
   }
 });
 
