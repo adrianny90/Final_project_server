@@ -38,9 +38,9 @@ server.post("/image-upload", upload.single("img"), (req, res) => {
   // const product = await ProductSchema.findByIdAndUpdate({img:req.file.secure_url, imgPublicId: req.file.public_id })
   res.json({ msg: "Image uploaded", img: req.file.secure_url });
 });
-server.use("/*splat", (req, res) =>
-  res.status(404).json({ error: "Not found" })
-);
+// server.use("/*splat", (req, res) =>
+//   res.status(404).json({ error: "Not found" })
+// );
 
 server.use(errorHandler);
 
