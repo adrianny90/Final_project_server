@@ -106,19 +106,30 @@ export const deleteUser = async (req, res) => {
 };
 
 export const updateUser = async (req, res) => {
-  const { firstName, lastName, email, password } = req.body;
-
+  const { firstName, lastName, email, address } = req.body;
+  let coords = address?.location?.coordinates;
   try {
     const findUser = await User.findOne({ email });
-    // if (!findUser.length) throw new ErrorResponse("User not found", 404);
+    if (!findUser) throw new ErrorResponse("User not found", 404);
     const updatedUser = await User.findOneAndUpdate(
       { email },
-      { firstName, lastName, password },
+      {
+        firstName,
+        lastName,
+        address: {
+          ...address,
+          location: {
+            type: "Point",
+            coordinates: coords,
+          },
+        },
+      },
       { new: false }
     );
     res.status(200).json(updatedUser);
   } catch (error) {
-    throw new ErrorResponse("Something went wrong", 400);
+    const errorData = error.message;
+    throw new ErrorResponse(errorData || "Something went wrong", 400);
   }
 };
 

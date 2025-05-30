@@ -116,3 +116,34 @@ export const updateItem = async (req, res) => {
     throw new ErrorResponse(`Something went wrong: ${error.message} `, 400);
   }
 };
+
+export const getUserItem = async (req, res) => {
+  // console.log(req.body);
+
+  try {
+    const items = await Item.find({ _id: { $in: req.body } });
+    if (!items) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+    res.status(200).json(items);
+  } catch (error) {
+    console.error("Error in create message:", error);
+    return res.status(500).json({ message: error.message || "Server Error" });
+  }
+};
+
+export const getUserAllItem = async (req, res) => {
+  const { _id } = req.body;
+  console.log(_id);
+
+  try {
+    const items = await Item.find({ userId: _id });
+    if (!items) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+    res.status(200).json(items);
+  } catch (error) {
+    console.error("Error in create message:", error);
+    return res.status(500).json({ message: error.message || "Server Error" });
+  }
+};
