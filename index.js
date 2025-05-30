@@ -19,7 +19,10 @@ server.use(
   cors({ origin: `${process.env.ALLOWED_ORIGIN}`, credentials: true })
 );
 server.use(cookieParser());
-
+server.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next();
+});
 server.use("/auth", authRouter);
 server.use("/users", userRouter);
 server.use("/items", itemRouter);
