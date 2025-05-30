@@ -18,7 +18,7 @@ authRouter.get("/me", verifyToken, me);
 authRouter.post("/signin", validateSchema(signInSchema), getUser);
 authRouter.post("/signup", validateSchema(signUpSchema), createUser);
 authRouter.delete("/signout", signOut);
-authRouter.post("/verify", verifyUser);
+authRouter.post("/verify/:token", verifyUser);
 authRouter.post("/update", updateUser);
 
 export default authRouter;

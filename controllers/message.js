@@ -1,6 +1,5 @@
 import Messages from "../models/Messages.js";
 import ErrorResponse from "../utils/ErrorResponse.js";
-import User from "../models/User.js";
 
 export const createMessage = async (req, res) => {
   const { content, receiverId, senderId, itemId } = req.body;
