@@ -14,7 +14,9 @@ const server = express();
 const port = process.env.PORT || 3000;
 
 server.use(express.json());
-server.use(cors({ origin: "http://localhost:5173", credentials: true }));
+server.use(
+  cors({ origin: `${process.env.ALLOWED_ORIGIN}`, credentials: true })
+);
 server.use(cookieParser());
 
 server.use("/auth", authRouter);
