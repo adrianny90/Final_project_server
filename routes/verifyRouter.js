@@ -4,7 +4,7 @@ import { Router } from "express";
 
 const verifyRouter = Router();
 
-userRouter.route("/:token").get(async (req, res) => {
+verifyRouter.route("/:token").get(async (req, res) => {
   const { token } = req.params;
   console.log("GET request received with token:", token);
   try {
@@ -22,4 +22,4 @@ userRouter.route("/:token").get(async (req, res) => {
   }
 });
 
-export default userRouter;
+export default verifyRouter;
