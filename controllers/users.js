@@ -26,7 +26,7 @@ export const createUser = async (req, res) => {
         verificationToken,
       });
     }
-    const verificationUrl = `http://localhost:5173/verify/${verificationToken}`;
+    const verificationUrl = `${process.env.CLIENT_URL}/verify/${verificationToken}`;
     //onboarding@resend.dev
     await resend.emails.send({
       from: "berlinGive@asdasd.ddns-ip.net",
