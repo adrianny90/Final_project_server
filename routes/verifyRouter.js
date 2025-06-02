@@ -36,6 +36,8 @@ const verifyRouter = Router();
 
 verifyRouter.get("/:token", async (req, res) => {
   const { token } = req.params;
+  console.log(token, "here");
+
   console.log("GET request received with token:", token);
   try {
     const findUser = await User.findOne({ verificationToken: token });
