@@ -5,12 +5,13 @@ export const createItem = async (req, res) => {
   console.log("called Create Item");
   console.log("reqbody", req.body);
   const {
+    postType,
     title,
     description,
     userId,
     category,
-    address,
     photos,
+    address,
     collectionTime,
   } = req.body;
 
@@ -25,10 +26,12 @@ export const createItem = async (req, res) => {
     }
 
     const item = await Item.create({
+      postType,
       title,
       description,
       userId,
       category,
+      photos,
       address: {
         ...address,
         location: {
@@ -36,7 +39,6 @@ export const createItem = async (req, res) => {
           coordinates: coords,
         },
       },
-      photos,
       collectionTime,
     });
     res.status(200).json(item);
@@ -118,8 +120,9 @@ export const updateItem = async (req, res) => {
     description,
     userId,
     category,
-    address,
+    postType,
     photos,
+    address,
     collectionTime,
   } = req.body;
 
@@ -133,6 +136,7 @@ export const updateItem = async (req, res) => {
         description,
         userId,
         category,
+        postType,
         photos,
         collectionTime,
       }
