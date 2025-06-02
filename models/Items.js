@@ -1,6 +1,11 @@
 import { Schema, model } from "mongoose";
 
 const itemSchema = new Schema({
+  postType: {
+    type: String,
+    enum: ["Offer", "Request"],
+    required: [true, "Post type is required!"],
+  },
   title: {
     type: String,
     required: [true, "Title is required!"],
