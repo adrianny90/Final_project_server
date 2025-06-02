@@ -48,14 +48,40 @@ export const createItem = async (req, res) => {
 
 export const getAllItems = async (req, res) => {
   try {
-    const { category } = req.query;
-    const query = category ? { category } : {};
+    const { category,search,lat,lng,radius } = req.query;
+    const query =  {};
+
+    if (category && category !==""){
+      query.category = category;
+    }
+    if(search && search !== ""){
+      query.title = {$regex: search, $options: "i"};
+    }
+
+    if (lat && lng && radius){
+      const latitude = parseFloat(lat);
+      const longitude = parseFloat(lng);
+      const distance = parseInt(radius);
+
+    if (!isNaN(latitude)&& !isNaN(longitude)&& !isNaN(distance)){
+      query["address.location"] = {
+        $near: {
+          $geometry:{
+            type:"Point",
+            coordinates: [longitude,latitude],
+          },
+          $maxDistance:distance,
+          },
+        };
+      }
+    }
 
     const items = await Item.find(query);
-
     res.status(200).json(items);
+
   } catch (error) {
-    throw new ErrorResponse("Failed to fetch users", 500);
+    console.error("Error in getAllItems:",error);
+    return res.status(500).json({message:error.message || "Server Error "});
   }
 };
 
