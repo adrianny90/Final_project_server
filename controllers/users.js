@@ -168,3 +168,25 @@ export const verifyUser = async (req, res) => {
     throw new ErrorResponse("Something went wrong", 400);
   }
 };
+
+export const getOwners = async (req, res) => {
+  const allItems = req.body;
+  let userIds = [];
+  allItems.forEach((element) => {
+    userIds.push(element.userId);
+  });
+  // console.log(userIds);
+
+  try {
+    const owners = await User.find({ _id: { $in: userIds } });
+    if (!owners) {
+      return res.status(404).json({ message: "Owner not found" });
+    }
+    // console.log(owners);
+
+    res.status(200).json(owners);
+  } catch (error) {
+    console.error("Error in getting owner:", error);
+    return res.status(500).json({ message: error.message || "Server Error" });
+  }
+};
