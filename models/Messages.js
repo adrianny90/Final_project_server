@@ -20,6 +20,10 @@ const messageSchema = new Schema({
     type: String,
     required: [true, "Item id is required!"],
   },
+  ownerId: {
+    type: String,
+    required: [true, "Owner id is required!"],
+  },
 
   id: {
     type: Number,
