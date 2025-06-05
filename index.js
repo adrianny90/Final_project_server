@@ -38,8 +38,11 @@ server.use(
     setHeaders: (res, path) => {
       res.set({
         "Cache-Control": "public, max-age=31536000, immutable",
-        ETag: true, // Włącza ETag
+        ETag: true,
         "Last-Modified": new Date("2025-01-01").toUTCString(),
+        Expires: new Date(Date.now() + 31536000 * 1000).toUTCString(),
+        "CDN-Cache-Control": "public, max-age=31536000",
+        "Cloudflare-CDN-Cache-Control": "public, max-age=31536000",
       });
     },
   })
