@@ -83,7 +83,7 @@ export const deleteItem = async (req, res) => {
       return res.status(404).json({ message: "Could not find item" });
     console.log(findItem);
 
-    const deletedItem = await Item.findOneAndDelete(req.params.id);
+    const deletedItem = await Item.findOneAndDelete({ _id: req.params.id });
     res.status(200).json(deletedItem);
   } catch (error) {
     throw new ErrorResponse("Something went wrong", 400);
