@@ -11,19 +11,24 @@ import messageRouter from "./routes/messageRouter.js";
 import eventRouter from "./routes/eventRouter.js";
 import verifyRouter from "./routes/verifyRouter.js";
 import favoritesRouter from "./routes/favoritesRouter.js";
+import compression from "compression";
+
 
 const server = express();
 const port = process.env.PORT || 3000;
 
+server.use(compression());
 server.use(express.json());
 server.use(
   cors({ origin: `${process.env.ALLOWED_ORIGIN}`, credentials: true })
 );
 server.use(cookieParser());
-server.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-  next();
-});
+
+// server.use((req, res, next) => {
+//   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+//   next();
+// });
+
 server.use("/auth", authRouter);
 server.use("/users", userRouter);
 server.use("/items", itemRouter);
@@ -32,8 +37,27 @@ server.use("/event", eventRouter);
 server.use("/verify", verifyRouter);
 server.use("/favorites", favoritesRouter);
 server.get("/test", (req, res) => {
-  res.status(200).json({ message: "Test route is working" });
+  res.status(200).json({ message: "Test route is working" })});
+
+server.use(
+  "/video",
+  express.static("public/video", {
+    setHeaders: (res, path) => {
+      res.set({
+        "Cache-Control": "public, max-age=31536000, immutable",
+        ETag: true,
+        "Last-Modified": new Date("2025-01-01").toUTCString(),
+        Expires: new Date(Date.now() + 31536000 * 1000).toUTCString(),
+        "CDN-Cache-Control": "public, max-age=31536000",
+        "Cloudflare-CDN-Cache-Control": "public, max-age=31536000",
+      });
+    },
+  })
+);
+server.use("/video", (req, res) => {
+  res.status(404).json({ error: "Video not found" });
 });
+
 server.post("/image-upload", upload.single("img"), (req, res) => {
   console.log(req.file);
   // Example how to store the image url in your database.
