@@ -78,7 +78,7 @@ export const deleteItem = async (req, res) => {
   console.log(req.params.id);
 
   try {
-    const findItem = await Item.findById(req.params.id);
+    const findItem = await Item.findById({ _id: req.params.id });
     if (!findItem)
       return res.status(404).json({ message: "Could not find item" });
     console.log(findItem);
