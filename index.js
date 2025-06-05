@@ -29,9 +29,16 @@ server.use("/items", itemRouter);
 server.use("/message", messageRouter);
 server.use("/event", eventRouter);
 server.use("/verify", verifyRouter);
-server.get("/test", (req, res) => {
-  res.status(200).json({ message: "Test route is working" });
-});
+
+server.use(
+  "/video",
+  express.static("public/video", {
+    setHeaders: (res, path) => {
+      res.set("Cache-Control", "public, max-age=31536000");
+    },
+  })
+);
+
 server.post("/image-upload", upload.single("img"), (req, res) => {
   console.log(req.file);
   // Example how to store the image url in your database.
