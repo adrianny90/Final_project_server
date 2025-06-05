@@ -177,3 +177,38 @@ export const getUserAllItem = async (req, res) => {
     return res.status(500).json({ message: error.message || "Server Error" });
   }
 };
+export const bulkCreateItems = async (req, res) => {
+  const items = req.body;
+
+  if (!Array.isArray(items)) {
+    return res.status(400).json({ message: "Request body must be an array of items" });
+  }
+
+  try {
+    // Optional: Validierung und Formatierung pro Item
+    const formattedItems = items.map(item => {
+      const coords = item?.address?.location?.coordinates;
+
+      if (!Array.isArray(coords) || coords.length !== 2) {
+        throw new Error("Invalid or missing coordinates in one of the items");
+      }
+
+      return {
+        ...item,
+        address: {
+          ...item.address,
+          location: {
+            type: "Point",
+            coordinates: coords,
+          },
+        },
+      };
+    });
+
+    const insertedItems = await Item.insertMany(formattedItems);
+    res.status(201).json(insertedItems);
+  } catch (error) {
+    console.error("Error in bulkCreateItems:", error);
+    res.status(500).json({ message: error.message || "Server Error" });
+  }
+};

@@ -10,6 +10,7 @@ import authRouter from "./routes/authRouter.js";
 import messageRouter from "./routes/messageRouter.js";
 import eventRouter from "./routes/eventRouter.js";
 import verifyRouter from "./routes/verifyRouter.js";
+import favoritesRouter from "./routes/favoritesRouter.js";
 
 const server = express();
 const port = process.env.PORT || 3000;
@@ -29,6 +30,7 @@ server.use("/items", itemRouter);
 server.use("/message", messageRouter);
 server.use("/event", eventRouter);
 server.use("/verify", verifyRouter);
+server.use("/favorites", favoritesRouter);
 server.get("/test", (req, res) => {
   res.status(200).json({ message: "Test route is working" });
 });
