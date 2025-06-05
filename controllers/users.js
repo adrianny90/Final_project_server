@@ -25,7 +25,7 @@ export const createUser = async (req, res) => {
       verificationToken,
     });
     const verificationUrl = `${process.env.CLIENT_URL}/verify/${verificationToken}`;
-    console.log("userdatatocreate", user);
+    // console.log("userdatatocreate", user);
 
     //onboarding@resend.dev
     await resend.emails.send({
@@ -152,7 +152,7 @@ export const me = async (req, res) => {
 };
 
 export const verifyUser = async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   const { verificationToken } = req.body;
   try {
     const findUser = await User.findOne({ verificationToken });
@@ -187,6 +187,23 @@ export const getOwners = async (req, res) => {
     res.status(200).json(owners);
   } catch (error) {
     console.error("Error in getting owner:", error);
+    return res.status(500).json({ message: error.message || "Server Error" });
+  }
+};
+
+export const getRelatedUsers = async (req, res) => {
+  // console.log(req.body);
+  try {
+    const persons = await User.find({
+      $or: [{ _id: { $in: req.body } }],
+    });
+    if (!persons) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json(persons);
+    // console.log(persons);
+  } catch (error) {
+    console.error("Error in fetching related users:", error);
     return res.status(500).json({ message: error.message || "Server Error" });
   }
 };
