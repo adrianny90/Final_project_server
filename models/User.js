@@ -44,6 +44,13 @@ const userSchema = new Schema({
   createdAt: { type: Date, default: Date.now },
   isVerified: { type: Boolean, default: false },
   verificationToken: { type: String },
+  favorites: [
+    {
+      type: Schema.Types.ObjectId,
+      ref:"Item",
+      required: false,
+    },
+  ],
 });
 
 const User = model("User", userSchema);
