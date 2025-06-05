@@ -10,10 +10,12 @@ import authRouter from "./routes/authRouter.js";
 import messageRouter from "./routes/messageRouter.js";
 import eventRouter from "./routes/eventRouter.js";
 import verifyRouter from "./routes/verifyRouter.js";
+import compression from "compression";
 
 const server = express();
 const port = process.env.PORT || 3000;
 
+server.use(compression());
 server.use(express.json());
 server.use(
   cors({ origin: `${process.env.ALLOWED_ORIGIN}`, credentials: true })
@@ -34,10 +36,17 @@ server.use(
   "/video",
   express.static("public/video", {
     setHeaders: (res, path) => {
-      res.set("Cache-Control", "public, max-age=31536000");
+      res.set({
+        "Cache-Control": "public, max-age=31536000, immutable",
+        ETag: true, // Włącza ETag
+        "Last-Modified": new Date("2025-01-01").toUTCString(),
+      });
     },
   })
 );
+server.use("/video", (req, res) => {
+  res.status(404).json({ error: "Video not found" });
+});
 
 server.post("/image-upload", upload.single("img"), (req, res) => {
   console.log(req.file);
