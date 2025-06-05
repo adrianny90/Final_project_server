@@ -4,6 +4,7 @@ import {
   deleteUser,
   getAllUsers,
   getOwners,
+  getRelatedUsers,
   updateUser,
 } from "../controllers/users.js";
 
@@ -14,6 +15,7 @@ userRouter
   .get("/", getAllUsers)
   .post("/", createUser)
   .post("/items", getOwners)
+  .post("/related", getRelatedUsers)
   .delete("/", deleteUser)
   .put("/", updateUser);
 

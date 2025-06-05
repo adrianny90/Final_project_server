@@ -75,13 +75,15 @@ export const getItem = async (req, res, next) => {
 };
 
 export const deleteItem = async (req, res) => {
-  const { title, description, userId, category } = req.body;
+  console.log(req.params.id);
 
   try {
-    const findItem = await Item.findOne({ title });
+    const findItem = await Item.findById(req.params.id);
     if (!findItem)
       return res.status(404).json({ message: "Could not find item" });
-    const deletedItem = await Item.findOneAndDelete({ title });
+    console.log(findItem);
+
+    const deletedItem = await Item.findOneAndDelete(req.params.id);
     res.status(200).json(deletedItem);
   } catch (error) {
     throw new ErrorResponse("Something went wrong", 400);
