@@ -50,14 +50,18 @@ export const createItem = async (req, res) => {
 
 export const getAllItems = async (req, res) => {
   try {
-    const { category } = req.query;
-    const query = category ? { category } : {};
+    const { category, postType = "Offer" } = req.query; // Default to 'Offer'
+    const query = { postType }; // Always filter by postType
+
+    if (category && typeof category === "string") {
+      const categoriesArray = category.split(",");
+      query.category = { $in: categoriesArray };
+    }
 
     const items = await Item.find(query);
-
     res.status(200).json(items);
   } catch (error) {
-    throw new ErrorResponse("Failed to fetch users", 500);
+    throw new ErrorResponse("Failed to fetch items", 500);
   }
 };
 
