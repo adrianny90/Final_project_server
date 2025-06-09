@@ -15,7 +15,8 @@ const authRouter = Router();
 
 //endpoints
 authRouter.get("/me", verifyToken, me);
-authRouter.post("/signin", validateSchema(signInSchema), getUser);
+// authRouter.post("/signin", validateSchema(signInSchema), getUser);
+authRouter.post("/signin", getUser);
 authRouter.post("/signup", validateSchema(signUpSchema), createUser);
 authRouter.delete("/signout", signOut);
 authRouter.post("/verify", verifyUser);
