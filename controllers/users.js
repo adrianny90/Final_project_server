@@ -95,6 +95,8 @@ export const getUser = async (req, res) => {
 
       if (!findUser)
         return res.status(404).json({ message: "Could not find user" });
+      if (!findUser.isVerified)
+        throw new ErrorResponse("User not verified", 404);
       //Generate a JWT token to be sent to client
       const token = jwt.sign(
         { id: findUser._id, role: findUser.role },
