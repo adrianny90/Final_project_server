@@ -51,12 +51,12 @@ export const getAllUsers = async (req, res) => {
 
 export const getUser = async (req, res) => {
   const { email, password, email_verified } = req.body;
-  console.log(email, password, email_verified, "emailverified");
+  // console.log(email, password, email_verified, "emailverified");
 
   try {
     if (typeof email_verified === "undefined") {
       const findUser = await User.findOne({ email }).select("+password");
-      console.log("tu jestem", findUser);
+      // console.log("tu jestem", findUser);
 
       if (!findUser)
         return res.status(404).json({ message: "Could not find user" });
@@ -84,14 +84,14 @@ export const getUser = async (req, res) => {
       };
 
       const userResponse = findUser.toObject();
-      console.log("userResponse", userResponse);
+      // console.log("userResponse", userResponse);
       delete userResponse?.password;
 
       res.cookie("token", token, cookieOptions);
       res.status(201).json({ message: "Successfully logged in", userResponse });
     } else {
       const findUser = await User.findOne({ email });
-      console.log(findUser);
+      // console.log(findUser);
 
       if (!findUser)
         return res.status(404).json({ message: "Could not find user" });
@@ -115,7 +115,7 @@ export const getUser = async (req, res) => {
       };
 
       const userResponse = findUser.toObject();
-      console.log("userResponse", userResponse);
+      // console.log("userResponse", userResponse);
 
       delete userResponse?.password;
 
