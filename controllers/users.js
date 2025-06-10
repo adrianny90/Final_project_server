@@ -50,42 +50,78 @@ export const getAllUsers = async (req, res) => {
 };
 
 export const getUser = async (req, res) => {
-  const { email, password } = req.body;
-  // console.log(email, password);
+  const { email, password, email_verified } = req.body;
+  // console.log(email, password, email_verified, "emailverified");
 
   try {
-    const findUser = await User.findOne({ email }).select("+password");
-    // console.log(findUser);
+    if (typeof email_verified === "undefined") {
+      const findUser = await User.findOne({ email }).select("+password");
+      // console.log("tu jestem", findUser);
 
-    if (!findUser)
-      return res.status(404).json({ message: "Could not find user" });
+      if (!findUser)
+        return res.status(404).json({ message: "Could not find user" });
 
-    //Check if user typed password matches with hashed password on DB
-    const isMatch = await bcrypt.compare(password, findUser.password);
-    if (!isMatch) throw new ErrorResponse("Invalid credentials", 400);
-    if (!findUser.isVerified) throw new ErrorResponse("User not verified", 404);
-    //Generate a JWT token to be sent to client
-    const token = jwt.sign(
-      { id: findUser._id, role: findUser.role },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "7d",
-      }
-    );
-    // console.log(token);
+      //Check if user typed password matches with hashed password on DB
+      const isMatch = await bcrypt.compare(password, findUser.password);
+      if (!isMatch) throw new ErrorResponse("Invalid credentials", 400);
+      if (!findUser.isVerified)
+        throw new ErrorResponse("User not verified", 404);
+      //Generate a JWT token to be sent to client
+      const token = jwt.sign(
+        { id: findUser._id, role: findUser.role },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "7d",
+        }
+      );
+      // console.log(token);
 
-    const isProduction = process.env.NODE_ENV === "production";
-    const cookieOptions = {
-      httpOnly: true, // Cookies are only sent with HTTP requests
-      secure: isProduction, // Cookies are only sent with https when on production and http on development
-      sameSite: isProduction ? "None" : "Lax",
-    };
+      const isProduction = process.env.NODE_ENV === "production";
+      const cookieOptions = {
+        httpOnly: true, // Cookies are only sent with HTTP requests
+        secure: isProduction, // Cookies are only sent with https when on production and http on development
+        sameSite: isProduction ? "None" : "Lax",
+      };
 
-    const userResponse = findUser.toObject();
-    delete userResponse.password;
+      const userResponse = findUser.toObject();
+      // console.log("userResponse", userResponse);
+      delete userResponse?.password;
 
-    res.cookie("token", token, cookieOptions);
-    res.status(201).json({ message: "Successfully logged in", userResponse });
+      res.cookie("token", token, cookieOptions);
+      res.status(201).json({ message: "Successfully logged in", userResponse });
+    } else {
+      const findUser = await User.findOne({ email });
+      // console.log(findUser);
+
+      if (!findUser)
+        return res.status(404).json({ message: "Could not find user" });
+      if (!findUser.isVerified)
+        throw new ErrorResponse("User not verified", 404);
+      //Generate a JWT token to be sent to client
+      const token = jwt.sign(
+        { id: findUser._id, role: findUser.role },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "7d",
+        }
+      );
+      // console.log(token);
+
+      const isProduction = process.env.NODE_ENV === "production";
+      const cookieOptions = {
+        httpOnly: true, // Cookies are only sent with HTTP requests
+        secure: isProduction, // Cookies are only sent with https when on production and http on development
+        sameSite: isProduction ? "None" : "Lax",
+      };
+
+      const userResponse = findUser.toObject();
+      // console.log("userResponse", userResponse);
+
+      delete userResponse?.password;
+
+      res.cookie("token", token, cookieOptions);
+      res.status(201).json({ message: "Successfully logged in", userResponse });
+    }
   } catch (error) {
     throw new ErrorResponse("Something went wrong", 400);
   }
